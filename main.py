@@ -99,23 +99,28 @@ class RubiksMosaicGenerator:
         
         # Added these for aesthetics purposes :D
         # These lines separate every single individual color patch.
-        for x in range(0, final_width, output_scale):
+        for x in range(0, final_width + 1, output_scale):
             draw.line([(x, 0), (x, final_height)], fill=STICKER_BORDER, width=1)
             
-        for y in range(0, final_height, output_scale):
+        for y in range(0, final_height + 1, output_scale):
             draw.line([(0, y), (final_width, y)], fill=STICKER_BORDER, width=1)
 
         # separte the cubes
         # These lines separate the physical 3x3 cubes.
         cube_pixel_size = 3 * output_scale
         
-        for x in range(0, final_width, cube_pixel_size):
+        # Draw the internal lines only (skipping the edges)
+        for x in range(cube_pixel_size, final_width, cube_pixel_size):
             draw.line([(x, 0), (x, final_height)], fill=CUBE_BORDER, width=3)
             
-        for y in range(0, final_height, cube_pixel_size):
+        for y in range(cube_pixel_size, final_height, cube_pixel_size):
             draw.line([(0, y), (final_width, y)], fill=CUBE_BORDER, width=3)
 
+        # Draw the outer border using a rectangle so the width falls inside the image
+        draw.rectangle([(0, 0), (final_width - 1, final_height - 1)], outline=CUBE_BORDER, width=3)
+
         return final_img
+    
 
 if __name__ == "__main__":
     input_file = 'image.png'

@@ -11,7 +11,7 @@ For the following original_image I used 100 cubes as the var input to atleast se
 ![](output.png)
 
 ## Additional Info
-PS: This code is less cost effective because of downscaling the image first, reducing the dataset from millions of pixels to just the target grid size (e.g., 120x90). 
+PS: This code is a little fast because of downscaling the image first, reducing the dataset from millions of pixels to just the target grid size (e.g., 120x90). 
 
 it uses NumPy vectorization to calculate the Euclidean distance for all 6 palette colors and 3 RGB channels simultaneously using (low-level C optimization) - the numpy lib, completely avoiding slow Python loops for the math operations.....
 
