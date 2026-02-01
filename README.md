@@ -7,7 +7,11 @@ For the following original_image I used 100 cubes wide as the var input to atlea
 ## Original
 ![](image.png)
 
+<<<<<<< HEAD
 ## mosaic - 10K cubes used
+=======
+## mosaic - 100 cubes wide used
+>>>>>>> 6a410a3161d2634dbbf6d054ce33df05bbd0195b
 ![](output.png)
 
 ## Additional Info
