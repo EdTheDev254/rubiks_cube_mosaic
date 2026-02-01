@@ -2,12 +2,12 @@
 Mapping an image using a Rubiks cube standard colors.
 
 # Sample
-For the following original_image I used 100 cubes as the var input to atleast see some details from it.
+For the following original_image I used 100 cubes wide as the var input to atleast see some details from it.
 
 ## original
 ![](image.png)
 
-## mosaic - 100 cubes used
+## mosaic - 100 cubes wide used
 ![](output.png)
 
 ## Additional Info
