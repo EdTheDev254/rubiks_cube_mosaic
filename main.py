@@ -16,10 +16,10 @@ STICKER_BORDER = (0, 0, 0)
 
 
 class RubiksMosaicGenerator:
-    def __init__(self, image_path, cubes_wide=40):
+    def __init__(self, image_path, cubes_wide=40, checker ='default'):
         self.image_path = image_path
         self.cubes_wide = cubes_wide
-
+        self.checker = checker
 
         # we load the 6 colors into a numpy array grid(some sort of a computer matrix/ not the movie) for instant calculations
         self.palette = np.array([WHITE, RED, GREEN, BLUE, ORANGE, YELLOW])
@@ -73,15 +73,65 @@ class RubiksMosaicGenerator:
         mosaic_array = np.zeros_like(image_array)
 
 
-        for row in range(target_height):# row 
-            for col in range(target_width): # column
+        
+        if self.checker == 'dither':
+            # use dithering method
+
+            processing_grid = image_array.astype(float)
+
+            for row in range(target_height):
+                for col in range(target_width):
+                    
+                    #  get current pixel 
+                    old_pixel = processing_grid[row, col].copy()
+                    
+                    closest = self.get_closest_color(old_pixel)
+                    mosaic_array[row, col] = closest
+                    
+                    #(The Quantization Error)
+                    quant_error = old_pixel - closest
+                    
+                    # Push the mistake to neighbors (Floyd-Steinberg Diffusion)
+                    # prevent out of boounds errors
+                    if col + 1 < target_width:
+                        processing_grid[row, col + 1] += quant_error * 7 / 16 
+                    
+                    if row + 1 < target_height:
+                        if col - 1 >= 0:
+                            processing_grid[row + 1, col - 1] += quant_error * 3 / 16
+                        
+                        processing_grid[row + 1, col] += quant_error * 5 / 16
+                        
+                        if col + 1 < target_width:
+                            processing_grid[row + 1, col + 1] += quant_error * 1 / 16
+        else:
+            if self.checker != 'default':
+                print("Invalid checker option. Using default NN method.")
+
+            # use default NN method 
+            for row in range(target_height):
+                for col in range(target_width):
+                    
+                    pixel = image_array[row, col]
+                    
+                    closest = self.get_closest_color(pixel)
+                    
+                    mosaic_array[row, col] = closest
+
+        # for row in range(target_height):# row 
+        #     for col in range(target_width): # column
                 
-                pixel = image_array[row, col] # get pixel color
+        #         pixel = image_array[row, col] # get pixel color
                 
-                closest = self.get_closest_color(pixel) # find closest color
+        #         closest = self.get_closest_color(pixel) # find closest color
                 
-                # We write the closest color into the specific slot on the blank canvas.
-                mosaic_array[row, col] = closest 
+        #         # We write the closest color into the specific slot on the blank canvas.
+        #         mosaic_array[row, col] = closest 
+
+        # make a copy for testing
+        #image_array = image_array.copy()
+        #height, width, _ = processing_grid.shape
+        # print(mosaic_array)
 
         # .astype('uint8') ensures the numbers are standard (0-255) image colors.
         mosaic_img = Image.fromarray(mosaic_array.astype('uint8'))
@@ -127,14 +177,23 @@ if __name__ == "__main__":
     
     print(f"Processing {input_file}........")
 
-    generator = RubiksMosaicGenerator(input_file, cubes_wide=100) # cubes_wide is the number of cubes
+    generator = RubiksMosaicGenerator(input_file, cubes_wide=30, checker='dither') # cubes_wide is the number of cubes
     
     result = generator.generate_mosaic(output_scale=10) # output_scale is the pixel size
     
     if result:
-        result.save('output.png')
-        print("Success! ...Saved as 'rubiks_mosaic_output.png'")
+        if generator.checker == 'dither':
+            result.save(f'dithered-{generator.cubes_wide**2}-cubes.png')
+            print("Success! ...'dithered output created'")
+        elif generator.checker == 'default':
+            result.save(f'default-{generator.cubes_wide**2}-cubes.png')
+            print("Success! ...'default output created'")
+        else:
+            pass
+
         result.show()
+
+#print(generator.checker)
 
 #print(rubiks.get_closet_color((0, 0, 0))) return the closest color to the pixel
 
