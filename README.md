@@ -2,12 +2,12 @@
 Mapping an image using a Rubiks cube standard colors.
 
 # Sample
-For the following original_image I used 100 cubes as the var input to atleast see some details from it.
+For the following original_image I used 100 cubes wide as the var input to atleast see some details from it.
 
-## original
+## Original
 ![](image.png)
 
-## mosaic - 100 cubes used
+## mosaic - 10K cubes used
 ![](output.png)
 
 ## Additional Info
@@ -15,3 +15,13 @@ PS: This code is a little fast because of downscaling the image first, reducing 
 
 it uses NumPy vectorization to calculate the Euclidean distance for all 6 palette colors and 3 RGB channels simultaneously using (low-level C optimization) - the numpy lib, completely avoiding slow Python loops for the math operations.....
 
+## Using Dithering
+Implementing dithering gives the image much more color, but the Floyd-Steinberg will scatter random colored stickers everywhere to try to create subtle color tones. And the low the number of cubes used the worse the image looks compared to the (NN) method. 
+
+PS: Still Learning..
+
+### 900 Cubes(Default)
+![](default-900-cubes.png)
+
+### 900 Cubes(Dithered)
+![](dithered-900-cubes.png)
